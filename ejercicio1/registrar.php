@@ -1,13 +1,32 @@
 <?php
 require_once './conexion.php';
 
-$nombre = $_POST['Nombre'] ?? 'se envío vacío';
-$edad = $_POST['Edad'] ?? 'Se envío vacío';
+$nombre = $_POST['nombre'] ?? 'Vacío';
+$edad = $_POST['edad'] ?? 'Vacío';
 
-if($edad >= 18) {
-    echo "Bienvenido(a) $nombre eres mayor de edad. ";
 
-}else{
-    echo "Lo siento $nombre, eres menor de edad.";
+
+$sql = "INSERT INTO personas (nombre, edad) VALUES (?, ?)";
+
+try {
+    if ($edad >= 18) {
+        # code...
+        $stmt = $conexion->prepare ($sql);
+        
+        $stmt->bindParam(1, $nombre, PDO::PARAM_STR);
+        $stmt->bindParam(2, $edad, PDO::PARAM_INT); 
+        
+        $stmt->execute();
+        
+        echo "Usuario registrado correctamente<br><a href='/ejercicio1'>Volver al inicio</a>";
+    } else {
+        echo "El usuario no se puede registrar correctamente porque es menor de edad";
+    }
+
+} catch (\Throwable $th) {
+    echo "Hubo un error: " . $th->getMessage();
+
+
+
 }
 
